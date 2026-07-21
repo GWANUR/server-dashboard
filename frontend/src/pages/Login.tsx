@@ -1,23 +1,51 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { api } from "../api/user";
+import { useAuth } from "../context/AuthContext";
+
 export default function Login() {
+    const navigate = useNavigate();
+    const { setUser } = useAuth();
+
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+
+    async function handleSubmit(e: React.FormEvent) {
+        e.preventDefault();
+
+        try {
+            await api.post("/login", {
+                email,
+                password,
+            });
+
+            const { data } = await api.get("/user");
+
+            setUser(data);
+
+            navigate("/");
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
     return (
-        <>
-        <section className="pages" id="Login">
-            <h1 className="">DashBoard by StackAlex</h1>
-            <div className="login_window">
-                <h2>Log In</h2>
-                <form action="/">
-                    <div className="input_icon">
-                        <input type="text" placeholder="Username" />
-                    </div>
-                    <div className="input_icon">
-                        <input type="password" placeholder="Password" />
-                    </div>
-                    <button type="submit" className="btn_icon">
-                        Log In
-                    </button>
-                </form>
-            </div>
-        </section>
-        </>
+        <form onSubmit={handleSubmit}>
+            <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+            />
+
+            <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+            />
+
+            <button type="submit">
+                Log In
+            </button>
+        </form>
     );
 }
