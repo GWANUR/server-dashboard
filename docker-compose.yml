@@ -17,10 +17,12 @@ services:
   postgres:
     image: postgres:17
     restart: unless-stopped
+    ports:
+      - "5432:5432"
     environment:
-      POSTGRES_DB: tracking
-      POSTGRES_USER: tracking
-      POSTGRES_PASSWORD: your_password
+      POSTGRES_DB: dashboard_as
+      POSTGRES_USER: dashboard_as
+      POSTGRES_PASSWORD: Aleksandr2002AlexStack
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
