@@ -14,8 +14,20 @@ services:
   backend:
     build: ./backend
 
-  postgres:
-    image: postgres:17
+postgres:
+  image: postgres:17
+  restart: unless-stopped
+
+  environment:
+    POSTGRES_DB: tracking
+    POSTGRES_USER: tracking
+    POSTGRES_PASSWORD: your_password
+
+  volumes:
+    - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
 
   redis:
     image: redis:8-alpine
