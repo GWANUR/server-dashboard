@@ -20,7 +20,7 @@ jobs:
           key: ${{ secrets.SERVER_KEY }}
 
           script: |
-            cd /opt/server-dashboard
+            cd server-dashboard
             git pull
             docker compose down
             docker compose up -d --build
