@@ -1,4 +1,4 @@
-import { Outlet, Link } from "react-router-dom";
+import { Outlet, Link, useNavigate } from "react-router-dom";
 import { api } from "../api/user";
 import { useState } from "react";
 import {
@@ -13,6 +13,7 @@ import {
 
 export default function MainLayout() {
 
+    const navigate = useNavigate();
     const [error,setError]=useState("")
 
     async function handleLogout(e: React.FormEvent) {
@@ -21,6 +22,7 @@ export default function MainLayout() {
 
         try{
             await api.post("/logout")
+            navigate("/login");
         } catch (err){
             setError((err as Error).message);
             console.log(error);
