@@ -1,4 +1,6 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, Link } from "react-router-dom";
+import { api } from "../api/user";
+import { useState } from "react";
 import {
   LayoutDashboard,
   Server,
@@ -8,7 +10,24 @@ import {
   LogOut,
 } from "lucide-react";
 
+
 export default function MainLayout() {
+
+    const [error,setError]=useState("")
+
+    async function handleLogout(e: React.FormEvent) {
+        e.preventDefault();
+        setError("")
+
+        try{
+            await api.post("/logout")
+        } catch (err){
+            setError((err as Error).message);
+            console.log(error);
+        }
+    }
+
+
     return (
         <div className="main-layout">
             <div className="sidebar">
@@ -16,37 +35,39 @@ export default function MainLayout() {
                 <nav>
                     <ul>
                         <li>
-                            <a href="/">
+                            <Link  to="/">
                                 <LayoutDashboard />
                                 Dashboard
-                            </a>
+                            </Link >
                         </li>
                         <li>
-                            <a href="/servers">
+                            <Link to="/servers">
                                 <Server size={18} />
                                 Servers
-                                </a>
+                            </Link>
                         </li>
                         <li>
-                            <a href="/log">
+                            <Link to="/log">
                                 <Logs size={18} />
                                 Log
-                            </a>
+                            </Link>
                         </li>
                         <li>
-                            <a href="/terminal">
+                            <Link to="/terminal">
                                 <Terminal size={18} />
                                 Terminal
-                            </a>
+                            </Link>
                         </li>
                         <li>
-                            <a href="/users">
+                            <Link to="/users">
                                 <Users size={18} />
                                 Users
-                            </a>
+                            </Link>
                         </li>
                     </ul>
-                <div className="logout btn_icon">
+                <div className="logout btn_icon"
+                    onClick={handleLogout}
+                    >
                     <LogOut size={18}/>
                     Logout
                 </div>
