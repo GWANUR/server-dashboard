@@ -11,7 +11,7 @@
     --main-background-color: rgba(0, 0, 0, 0.4);
 }
 
-body {
+body,html {
     margin: 0;
     padding: 0;
 }
@@ -23,6 +23,13 @@ li {
     list-style: none;
 }
 div#root {
+    background: var(--background);
+    color: var(--text-color);
+    min-height: 100vh;
+    min-width: 100vw;
+    overflow: hidden;
+}
+div.main-layout #login{
     display: grid;
     grid-template-columns: 1fr 5fr;
     gap: 100px;
@@ -30,8 +37,6 @@ div#root {
     align-items: center;
     align-content: center;
     justify-items: center;
-    background: var(--background);
-    color: var(--text-color);
     font-family: "Intel One Mono", monospace;
     background-size: 100% 100%;
     background-repeat: no-repeat;
