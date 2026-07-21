@@ -1,11 +1,23 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { api } from "../api/user";
+    
+type User = {
+    id: string;
+    email: string;
+    name: string;
+};
 
-const AuthContext = createContext(null);
+type AuthContextType = {
+    user: User | null;
+    loading: boolean;
+    setUser: React.Dispatch<React.SetStateAction<User | null>>;
+};
 
-export function AuthProvider({ children }) {
+const AuthContext = createContext<AuthContextType | null>(null);
 
-    const [user, setUser] = useState(null);
+export function AuthProvider({ children }: { children: React.ReactNode }) {
+
+    const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -30,6 +42,12 @@ export function AuthProvider({ children }) {
     );
 }
 
-export function useAuth() {
-    return useContext(AuthContext);
+export function useAuth(): AuthContextType {
+    const context = useContext(AuthContext);
+
+    if (!context) {
+        throw new Error("useAuth must be used within AuthProvider");
+    }
+
+    return context;
 }
