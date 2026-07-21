@@ -2,6 +2,23 @@ import {
   UserRoundPlus,
   UserPen,
 } from "lucide-react";
+import { getUsers } from "../api/user";
+import { useEffect, useState } from "react";
+
+const [users, setUsers] = useState<any[]>([]);
+
+useEffect(() => {
+    async function loadUsers() {
+        try {
+            const { data } = await getUsers();
+            setUsers(data);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    loadUsers();
+}, []);
 
 
 export default function Users_page() {
@@ -23,22 +40,16 @@ export default function Users_page() {
                             </tr>
                         </thead>
                         <tbody>
-                            <tr className="item">
-                                <td>
-                                    <input type="checkbox" />
-                                </td>
-                                <td>John Doe</td>
-                                <td>john.doe@example.com</td>
-                                <td>Admin</td>
-                            </tr>
-                            <tr className="item">
-                                <td>
-                                    <input type="checkbox" />
-                                </td>
-                                <td>Jane Smith</td>
-                                <td>jane.smith@example.com</td>
-                                <td>User</td>
-                            </tr>
+                            {users.map((user: any) => (
+                                <tr className="item" key={user.id}>
+                                    <td>
+                                        <input type="checkbox" />
+                                    </td>
+                                    <td>{user.name}</td>
+                                    <td>{user.email}</td>
+                                    <td>{user.role}</td>
+                                </tr>
+                            ))}
                         </tbody>
                     </table>
                 </div>
