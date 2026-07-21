@@ -1,6 +1,6 @@
 import ReactDOM from "react-dom/client";
 import { RouterProvider } from "react-router-dom";
-
+import { AuthProvider } from "./context/AuthContext";
 import "./index.scss";
 import { router } from "./router";
 
@@ -11,5 +11,7 @@ const root = document.getElementById("root")!;
 root.dataset.theme = prefersDark ? "dark" : "light";
 
 ReactDOM.createRoot(root).render(
-    <RouterProvider router={router} />
+    <AuthProvider>
+        <RouterProvider router={router} />
+    </AuthProvider>
 );

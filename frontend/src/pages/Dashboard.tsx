@@ -22,7 +22,6 @@ import {
     Cell,
 } from "recharts";
 
-import {  } from 'recharts';
 
 const cpuData = [
     { time: "12:00", cpu: 15 },
@@ -42,7 +41,6 @@ const COLORS = [
     "#06b6d4",
     "#22c55e",
 ];
-
 
 export default function Dashboard() {
     return (
