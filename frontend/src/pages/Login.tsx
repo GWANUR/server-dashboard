@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../api/user";
 import { useAuth } from "../context/AuthContext";
+import axios from "axios";
 
 export default function Login() {
     const navigate = useNavigate();
@@ -9,23 +10,33 @@ export default function Login() {
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [error,setError]=useState("")
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
+        setError("")
 
         try {
-            await api.post("/login", {
+            const { data } = await api.post("/login", {
                 email,
                 password,
             });
 
-            const { data } = await api.get("/user");
+            localStorage.setItem("token", data.token);
 
-            setUser(data);
+            api.defaults.headers.common.Authorization = `Bearer ${data.token}`;
+
+            setUser(data.user);
 
             navigate("/");
         } catch (err) {
             console.error(err);
+
+            if (axios.isAxiosError(err)) {
+                setError(err.response?.data?.message ?? "An error occurred");
+            } else {
+                setError("An error occurred");
+            }
         }
     }
 
@@ -35,6 +46,7 @@ export default function Login() {
             <div className="login_window">
             <h2>Login</h2>
                 <form onSubmit={handleSubmit}>
+                    {error && <span className="error">{error}</span>}
                     <input
                         type="email"
                         value={email}
