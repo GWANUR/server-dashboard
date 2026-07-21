@@ -1,4 +1,4 @@
-import { CornerDownLeft, Search } from "lucide-react";
+import { Search } from "lucide-react";
 
 export default function Log() {
     const log = [
