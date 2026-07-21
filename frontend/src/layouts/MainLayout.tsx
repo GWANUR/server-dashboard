@@ -7,7 +7,6 @@ import {
   Users,
   LogOut,
 } from "lucide-react";
-import Log from "../pages/Log";
 
 export default function MainLayout() {
     return (
