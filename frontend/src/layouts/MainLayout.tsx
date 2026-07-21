@@ -5,7 +5,9 @@ import {
   Logs,
   Terminal,
   Users,
+  LogOut,
 } from "lucide-react";
+import Log from "../pages/Log";
 
 export default function MainLayout() {
     return (
@@ -45,6 +47,10 @@ export default function MainLayout() {
                             </a>
                         </li>
                     </ul>
+                <div className="logout btn_icon">
+                    <LogOut size={18}/>
+                    Logout
+                </div>
                 </nav>
             </div>
                 
