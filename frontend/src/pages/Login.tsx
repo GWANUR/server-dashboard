@@ -30,22 +30,28 @@ export default function Login() {
     }
 
     return (
-        <form onSubmit={handleSubmit}>
-            <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-            />
+        <section className="page" id="login">
+            <h1>Dashboard <a href="https://github.com/GWANUR" target="_blank" rel="noopener noreferrer">By StackAlex</a></h1>
+            <div className="login_window">
+            <h2>Login</h2>
+                <form onSubmit={handleSubmit}>
+                    <input
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                    />
 
-            <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-            />
+                    <input
+                        type="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                    />
 
-            <button type="submit">
-                Log In
-            </button>
-        </form>
+                    <button type="submit">
+                        Log In
+                    </button>
+                </form>
+            </div>
+        </section>
     );
 }
