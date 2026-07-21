@@ -1,0 +1,21 @@
+services:
+
+  nginx:
+    build: ./docker/nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - frontend
+      - backend
+
+  frontend:
+    build: ./frontend
+
+  backend:
+    build: ./backend
+
+  postgres:
+    image: postgres:17
+
+  redis:
+    image: redis:8-alpine
