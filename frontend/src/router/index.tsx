@@ -8,10 +8,14 @@ import NotFound from "../pages/NotFound";
 import Terminal from "../pages/Terminal";
 import Log from "../pages/Log";
 import Users_page from "../pages/UsersPage"; 
+import ProtectedRoute from "./ProtectedRoute";
 
 export const router = createBrowserRouter([
     {
-        element: <MainLayout />,
+        element: 
+        <ProtectedRoute>
+            <MainLayout />
+        </ProtectedRoute>,
         children: [
             {
                 path: "/",
