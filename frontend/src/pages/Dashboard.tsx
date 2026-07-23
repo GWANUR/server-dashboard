@@ -86,7 +86,7 @@ export default function Dashboard() {
                     <div className="cpu_stat">
                         <Cpu size={60} className="icon" />
                         <span className="label">CPU Usage:</span>
-                        <span className="value">{loading ? "—" : `${stats.cpu?.usage ?? 0}%`}</span>
+                        <span className="value">{loading ? "—" : `${stats.cpu ?? 0}%`}</span>
                     </div>
                     <div className="ram_stat">
                         <MemoryStick size={60} className="icon" />
