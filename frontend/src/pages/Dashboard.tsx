@@ -66,12 +66,17 @@ export default function Dashboard() {
     }, []);
 
     const cpuData = useMemo(
-        () => [{ time: "now", cpu: stats.cpu ?? 0 }],
-        [stats.cpu]
+        () => [
+            {
+                time: "now",
+                cpu: stats.cpu?.usage ?? 0,
+            },
+        ],
+        [stats.cpu?.usage]
     );
 
     const ramData = useMemo(() => [
-        { name: "Used", value: stats.ram?.used ?? 0 },
+        { name: "Used", value: stats.ram?.percent ?? 0 },
         { name: "Free", value: Math.max(100 - (stats.ram?.percent ?? 0), 0) },
     ], [stats.ram?.percent]);
 
@@ -97,7 +102,7 @@ export default function Dashboard() {
                     <div className="cpu_stat">
                         <Cpu size={60} className="icon" />
                         <span className="label">CPU Usage:</span>
-                        <span className="value">{loading ? "—" : `${stats.cpu ?? 0}%`}</span>
+                        <span className="value">{loading ? "—" : `${stats.cpu?.usage ?? 0}%`}</span>
                     </div>
                     <div className="ram_stat">
                         <MemoryStick size={60} className="icon" />
