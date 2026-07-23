@@ -60,7 +60,7 @@ export default function Dashboard() {
     ], [stats.cpu?.usage]);
 
     const ramData = useMemo(() => [
-        { name: "Used", value: stats.ram?.percent ?? 0 },
+        { name: "Used", value: stats.ram?.used ?? 0 },
         { name: "Free", value: Math.max(100 - (stats.ram?.percent ?? 0), 0) },
     ], [stats.ram?.percent]);
 
