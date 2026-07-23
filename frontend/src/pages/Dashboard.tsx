@@ -27,7 +27,9 @@ import { fetchSystemStats } from "../api/agent";
 const COLORS = ["#8b5cf6", "#06b6d4", "#22c55e"];
 
 type Stats = {
-    cpu?: number;
+    cpu?: {
+        usage: number;
+    };
     ram?: {
         total: number;
         used: number;
@@ -41,8 +43,12 @@ type Stats = {
     network?: {
         received_bytes: number;
     };
-    load?: number[];
-    uptime?: number;
+    load?: {
+        one_minute: number;
+        five_minutes: number;
+        fifteen_minutes: number;
+    };
+    uptime?: string;
 };
 
 export default function Dashboard() {
