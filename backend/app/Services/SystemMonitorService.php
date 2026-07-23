@@ -6,6 +6,8 @@ class SystemMonitorService
 {
     public function getStats(): array
     {
+        $load = sys_getloadavg();
+
         return [
             'cpu' => [
                 'usage' => $this->cpuUsage(),
@@ -14,8 +16,6 @@ class SystemMonitorService
             'disk' => $this->diskUsage(),
             'network' => $this->networkUsage(),
             'uptime' => $this->uptime(),
-            $load = sys_getloadavg();
-
             'load' => [
                 'one_minute' => $load[0],
                 'five_minutes' => $load[1],
