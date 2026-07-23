@@ -7,12 +7,20 @@ class SystemMonitorService
     public function getStats(): array
     {
         return [
-            'cpu' => $this->cpuUsage(),
+            'cpu' => [
+                'usage' => $this->cpuUsage(),
+            ],
             'ram' => $this->ramUsage(),
             'disk' => $this->diskUsage(),
             'network' => $this->networkUsage(),
             'uptime' => $this->uptime(),
-            'load' => sys_getloadavg(),
+            $load = sys_getloadavg();
+
+            'load' => [
+                'one_minute' => $load[0],
+                'five_minutes' => $load[1],
+                'fifteen_minutes' => $load[2],
+            ],
         ];
     }
 
@@ -91,8 +99,14 @@ class SystemMonitorService
         return [];
     }
 
-    private function uptime(): int
+    private function uptime(): string
     {
-        return (int) explode(' ', file_get_contents('/proc/uptime'))[0];
+        $seconds = (int) explode(' ', file_get_contents('/proc/uptime'))[0];
+
+        $days = floor($seconds / 86400);
+        $hours = floor(($seconds % 86400) / 3600);
+        $minutes = floor(($seconds % 3600) / 60);
+
+        return "{$days}d {$hours}h {$minutes}m";
     }
 }

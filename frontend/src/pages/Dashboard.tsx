@@ -27,12 +27,22 @@ import { fetchSystemStats } from "../api/agent";
 const COLORS = ["#8b5cf6", "#06b6d4", "#22c55e"];
 
 type Stats = {
-    cpu?: { usage?: number };
-    ram?: { percent?: number; total?: number; used?: number };
-    disk?: { percent?: number; total?: number; used?: number };
-    network?: { received_bytes?: number };
-    load?: { one_minute?: number };
-    uptime?: string;
+    cpu?: number;
+    ram?: {
+        total: number;
+        used: number;
+        percent: number;
+    };
+    disk?: {
+        total: number;
+        used: number;
+        percent: number;
+    };
+    network?: {
+        received_bytes: number;
+    };
+    load?: number[];
+    uptime?: number;
 };
 
 export default function Dashboard() {
@@ -55,9 +65,10 @@ export default function Dashboard() {
         return () => window.clearInterval(interval);
     }, []);
 
-    const cpuData = useMemo(() => [
-        { time: "now", cpu: stats.cpu?.usage ?? 0 },
-    ], [stats.cpu?.usage]);
+    const cpuData = useMemo(
+        () => [{ time: "now", cpu: stats.cpu ?? 0 }],
+        [stats.cpu]
+    );
 
     const ramData = useMemo(() => [
         { name: "Used", value: stats.ram?.used ?? 0 },
@@ -111,11 +122,11 @@ export default function Dashboard() {
                 <div className="all_services">
                     <div className="running">
                         <span className="label">Load avg:</span>
-                        <span className="value">{loading ? "—" : `${stats.load?.one_minute ?? 0}`}</span>
+                        <span className="value">{loading ? "—" : `${stats.load?.[0] ?? 0}`}</span>
                     </div>
                     <div className="active_containers">
                         <span className="label">Uptime:</span>
-                        <span className="value">{loading ? "—" : stats.uptime ?? "n/a"}</span>
+                        <span className="value">{loading ? "—" : stats.uptime ?? 0}</span>
                     </div>
                 </div>
                 <hr />
