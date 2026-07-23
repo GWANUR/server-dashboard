@@ -133,7 +133,7 @@ export default function Dashboard() {
                 <div className="all_services">
                     <div className="running">
                         <span className="label">Load avg:</span>
-                        <span className="value">{loading ? "—" : `${stats.load?.[0] ?? 0}`}</span>
+                        <span className="value">{loading ? "—" : `${stats.load?.one_minute ?? 0}`}</span>
                     </div>
                     <div className="active_containers">
                         <span className="label">Uptime:</span>
