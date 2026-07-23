@@ -59,11 +59,27 @@ export default function Dashboard() {
         const load = async () => {
             try {
                 const data = await fetchSystemStats();
+
                 setStats(data);
-            } catch (error) {
-                console.error(error);
-            } finally {
-                setLoading(false);
+
+                setCpuHistory(prev => {
+                    const point = {
+                        time: new Date().toLocaleTimeString("ru-RU", {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            second: "2-digit",
+                        }),
+                        usage: data.cpu.usage,
+                    };
+
+                    const history = [...prev, point];
+
+                    // оставляем только последние 60 минут
+                    return history.slice(-720);
+                });
+
+            } catch (e) {
+                console.error(e);
             }
         };
         load();
@@ -71,15 +87,12 @@ export default function Dashboard() {
         return () => window.clearInterval(interval);
     }, []);
 
-    const cpuData = useMemo(
-        () => [
-            {
-                time: "now",
-                cpu: stats.cpu?.usage ?? 0,
-            },
-        ],
-        [stats.cpu?.usage]
-    );
+    type CpuPoint = {
+        time: string;
+        usage: number;
+    };
+
+    const [cpuHistory, setCpuHistory] = useState<CpuPoint[]>([]);
 
     const ramData = useMemo(() => [
         { name: "Used", value: stats.ram?.percent ?? 0 },
@@ -148,12 +161,18 @@ export default function Dashboard() {
                     <div className="cpugraph">
                         <span className="label">CPU Usage</span>
                         <ResponsiveContainer width="100%" height={300}>
-                            <LineChart data={cpuData}>
+                            <LineChart data={cpuHistory}>
                                 <CartesianGrid strokeDasharray="3 3" />
                                 <XAxis dataKey="time" />
-                                <YAxis />
+                                <YAxis domain={[0, 100]} />
                                 <Tooltip />
-                                <Line type="monotone" dataKey="cpu" stroke="#7c3aed" strokeWidth={3} />
+                                <Line
+                                    type="monotone"
+                                    dataKey="usage"
+                                    stroke="#7c3aed"
+                                    strokeWidth={2}
+                                    dot={false}
+                                />
                             </LineChart>
                         </ResponsiveContainer>
                     </div>
