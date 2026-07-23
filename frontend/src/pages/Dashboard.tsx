@@ -59,7 +59,6 @@ export default function Dashboard() {
         const load = async () => {
             try {
                 const data = await fetchSystemStats();
-
                 setStats(data);
 
                 setCpuHistory(prev => {
@@ -80,7 +79,11 @@ export default function Dashboard() {
 
             } catch (e) {
                 console.error(e);
-            }
+            } finally {
+        if (loading) {
+            setLoading(false);
+        }
+    }
         };
         load();
         const interval = window.setInterval(load, 5000);
