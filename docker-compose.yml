@@ -1,20 +1,50 @@
 services:
-
   nginx:
     build: ./docker/nginx
     ports:
       - "80:80"
     depends_on:
       - frontend
-      - backend
+      - backend-fpm
+      - backend-ws
+    networks:
+      - app-network
 
   frontend:
     build: ./frontend
+    networks:
+      - app-network
 
-  backend:
+  backend-fpm:
     build: ./backend
-    ports:
-      - "8000:8000"
+    # Важно: не пробрасывай порт наружу, Nginx ходит внутри сети
+    environment:
+      - APP_ENV=local
+      - DB_CONNECTION=pgsql
+      - DB_HOST=postgres
+      - DB_DATABASE=dashboard_as
+      - DB_USERNAME=dashboard_as
+      - DB_PASSWORD=Aleksandr2002AlexStack
+      # добавь остальные переменные .env
+    networks:
+      - app-network
+    depends_on:
+      - postgres
+
+  backend-ws:
+    build: ./backend
+    command: php artisan agent:ws --host=0.0.0.0 --port=8001
+    environment:
+      - APP_ENV=local
+      - DB_CONNECTION=pgsql
+      - DB_HOST=postgres
+      - DB_DATABASE=dashboard_as
+      - DB_USERNAME=dashboard_as
+      - DB_PASSWORD=Aleksandr2002AlexStack
+    networks:
+      - app-network
+    depends_on:
+      - postgres
 
   postgres:
     image: postgres:17
@@ -27,9 +57,17 @@ services:
       POSTGRES_PASSWORD: Aleksandr2002AlexStack
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network
 
   redis:
     image: redis:8-alpine
+    networks:
+      - app-network
 
 volumes:
   postgres_data:
+
+networks:
+  app-network:
+    driver: bridge
