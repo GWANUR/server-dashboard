@@ -35,4 +35,8 @@ return [
         ],
     ],
 
+    'agent' => [
+        'auth_token' => env('AGENT_AUTH_TOKEN', 'change-me-in-production'),
+    ],
+
 ];

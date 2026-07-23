@@ -19,4 +19,4 @@ COPY . .
 
 RUN composer install --no-dev --optimize-autoloader
 
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
+CMD ["sh", "-c", "php artisan agent:ws --host=0.0.0.0 --port=8000"]
