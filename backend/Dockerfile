@@ -19,5 +19,4 @@ COPY . .
 
 RUN composer install --no-dev --optimize-autoloader
 
-# Для FPM ничего не делаем: образ уже настроен на php-fpm как PID 1
-# CMD здесь НЕ нужен, если не переопределяешь поведение FPM
+CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]

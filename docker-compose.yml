@@ -17,6 +17,8 @@ services:
 
   backend-fpm:
     build: ./backend
+    expose:
+      - "8000"
     # Важно: не пробрасывай порт наружу, Nginx ходит внутри сети
     environment:
       - APP_ENV=local
@@ -34,6 +36,8 @@ services:
   backend-ws:
     build: ./backend
     command: php artisan agent:ws --host=0.0.0.0 --port=8001
+    expose:
+      - "8001"
     environment:
       - APP_ENV=local
       - DB_CONNECTION=pgsql
