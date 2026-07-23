@@ -29,25 +29,40 @@ class ServeAgentWebSocket extends Command
         $this->info("Agent WebSocket server listening on ws://{$host}:{$port}/ws/agent");
 
         while (true) {
-            $clientSocket = stream_socket_accept($serverSocket, 5);
+            try {
+                $clientSocket = @stream_socket_accept($serverSocket, 1);
 
-            if ($clientSocket === false) {
+                if ($clientSocket === false) {
+                    usleep(10000);
+                    continue;
+                }
+            } catch (\Throwable $e) {
+                $this->warn($e->getMessage());
+                usleep(10000);
                 continue;
             }
 
             stream_set_blocking($clientSocket, false);
-            $connection = new AgentSocketConnection((string) intval(microtime(true) * 1000), $clientSocket);
+
+            $connection = new AgentSocketConnection(
+                (string) intval(microtime(true) * 1000),
+                $clientSocket
+            );
+
             $service->registerConnection($connection);
 
             $handshake = '';
+
             while (is_resource($clientSocket)) {
                 $chunk = fread($clientSocket, 4096);
+
                 if ($chunk === '' || $chunk === false) {
                     usleep(20000);
                     continue;
                 }
 
                 $handshake .= $chunk;
+
                 if (str_contains($handshake, "\r\n\r\n")) {
                     break;
                 }
@@ -57,15 +72,16 @@ class ServeAgentWebSocket extends Command
                 $this->performHandshake($clientSocket, $handshake);
             }
 
-            $buffer = '';
             while (is_resource($clientSocket)) {
                 $chunk = fread($clientSocket, 4096);
+
                 if ($chunk === '' || $chunk === false) {
                     usleep(20000);
                     continue;
                 }
 
                 $payload = $connection->receive($chunk);
+
                 if ($payload === '') {
                     continue;
                 }
