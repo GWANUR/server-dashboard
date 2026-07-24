@@ -77,9 +77,11 @@ class AgentWebSocketService
         array $message
     ): void {
 
+        $payload = $message['payload'] ?? [];
+
         Log::info("Agent stats", [
-            'agent' => $message['agent_id'] ?? null,
-            'stats' => $message['stats'] ?? [],
+            'agent' => $payload['agent_id'] ?? null,
+            'stats' => $payload['stats'] ?? [],
         ]);
     }
 }
