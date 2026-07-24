@@ -1,5 +1,5 @@
 import { CornerDownLeft } from "lucide-react";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { sendTerminalCommand } from "../api/agent";
 import { Terminal } from "xterm";
 import { FitAddon } from "xterm-addon-fit";
@@ -9,7 +9,7 @@ export default function Terminal_page() {
     const [command, setCommand] = useState("");
     const [output, setOutput] = useState("Waiting for command...");
     const [loading, setLoading] = useState(false);
-
+    const containerRef = useRef<HTMLDivElement>(null); 
     const runCommand = async () => {
         if (!command.trim()) return;
         setLoading(true);
