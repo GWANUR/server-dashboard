@@ -31,7 +31,7 @@ export default function Terminal_page() {
     const fitAddon = new FitAddon();
 
     terminal.loadAddon(fitAddon);
-    terminal.open(containerRef.current);
+    terminal.open(containerRef.current!);
 
     fitAddon.fit();
 
