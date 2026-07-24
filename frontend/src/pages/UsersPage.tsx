@@ -2,7 +2,7 @@ import {
     UserRoundPlus,
     UserPen,
 } from "lucide-react";
-import { getUsers } from "../api/user";
+import { getUsers } from "../api/api";
 import { useEffect, useState } from "react";
 
 export default function Users_page() {

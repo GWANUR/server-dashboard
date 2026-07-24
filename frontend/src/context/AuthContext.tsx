@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { api } from "../api/user";
+import { api } from "../api/api";
     
 type User = {
     id: string;

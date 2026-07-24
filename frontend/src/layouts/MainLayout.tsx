@@ -1,5 +1,5 @@
 import { Outlet, Link, useNavigate } from "react-router-dom";
-import { api } from "../api/user";
+import { api } from "../api/api";
 import { useState } from "react";
 import {
   LayoutDashboard,
@@ -8,6 +8,7 @@ import {
   Terminal,
   Users,
   LogOut,
+  Settings,
 } from "lucide-react";
 
 
@@ -64,6 +65,12 @@ export default function MainLayout() {
                             <Link to="/users">
                                 <Users size={18} />
                                 Users
+                            </Link>
+                        </li>
+                        <li>
+                            <Link to="/settings">
+                                <Settings size={18} />
+                                Settings
                             </Link>
                         </li>
                     </ul>

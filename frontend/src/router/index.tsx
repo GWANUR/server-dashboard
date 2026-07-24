@@ -5,7 +5,8 @@ import Dashboard from "../pages/Dashboard";
 import Servers from "../pages/Servers";
 import Login from "../pages/Login";
 import NotFound from "../pages/NotFound";
-import Terminal from "../pages/Terminal";
+import Terminal_page from "../pages/Terminal";
+import Settings from "../pages/Settings";
 import Log from "../pages/Log";
 import Users_page from "../pages/UsersPage"; 
 import ProtectedRoute from "./ProtectedRoute";
@@ -27,7 +28,7 @@ export const router = createBrowserRouter([
             },
             {
                 path: "/terminal",
-                element: <Terminal />,
+                element: <Terminal_page />,
             },
             {
                 path: "/log",
@@ -36,6 +37,10 @@ export const router = createBrowserRouter([
             {
                 path: "/users",
                 element: <Users_page />,
+            },
+            {
+                path: "/settings",
+                element: <Settings />,
             },
         ],
     },

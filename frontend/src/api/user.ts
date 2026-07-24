@@ -1,16 +1,4 @@
-import axios from "axios";
-
-export const api = axios.create({
-    baseURL: "http://192.168.0.147/api",
-});
-
-const token = localStorage.getItem("token");
-
-if (token) {
-    api.defaults.headers.common.Authorization = `Bearer ${token}`;
-}
-
-export const getUsers = () => {
+import { api } from "../api/api";export const getUsers = () => {
     return api.get("/users");
 };
 

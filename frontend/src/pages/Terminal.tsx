@@ -1,8 +1,11 @@
 import { CornerDownLeft } from "lucide-react";
 import { useState } from "react";
 import { sendTerminalCommand } from "../api/agent";
+import { Terminal } from "xterm";
+import { FitAddon } from "xterm-addon-fit";
 
-export default function Terminal() {
+
+export default function Terminal_page() {
     const [command, setCommand] = useState("");
     const [output, setOutput] = useState("Waiting for command...");
     const [loading, setLoading] = useState(false);
@@ -17,8 +20,20 @@ export default function Terminal() {
             setOutput(`Error: ${error}`);
         } finally {
             setLoading(false);
-        }
+        } 
     };
+    const terminal = new Terminal({
+        cursorBlink: true,
+        fontFamily: "JetBrains Mono",
+        fontSize: 14,
+    });
+
+    const fitAddon = new FitAddon();
+
+    terminal.loadAddon(fitAddon);
+    terminal.open(containerRef.current);
+
+    fitAddon.fit();
 
     return (
         <section id="terminal" className="pages">
