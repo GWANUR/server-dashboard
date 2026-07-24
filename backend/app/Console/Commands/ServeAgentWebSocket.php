@@ -17,87 +17,111 @@ class ServeAgentWebSocket extends Command
         $host = $this->option('host');
         $port = (int) $this->option('port');
 
-        $serverSocket = stream_socket_server("tcp://{$host}:{$port}", $errno, $errstr);
+        $serverSocket = stream_socket_server(
+            "tcp://{$host}:{$port}",
+            $errno,
+            $errstr
+        );
 
         if (!$serverSocket) {
             $this->error("Unable to listen on {$host}:{$port}: {$errstr}");
-
             return self::FAILURE;
         }
 
+        stream_set_blocking($serverSocket, false);
+
         $service = new AgentWebSocketService();
+
         $this->info("Agent WebSocket server listening on ws://{$host}:{$port}/ws/agent");
 
+        $connections = [];
+
         while (true) {
-            try {
-                $clientSocket = @stream_socket_accept($serverSocket, 1);
-                if ($clientSocket === false) {
-                    usleep(10000);
-                    continue;
-                }
 
-                $this->info('Client connected');
+            // Принимаем новые подключения
+            while ($clientSocket = @stream_socket_accept($serverSocket, 0)) {
 
-                if ($clientSocket === false) {
-                    usleep(10000);
-                    continue;
-                }
-            } catch (\Throwable $e) {
-                $this->warn($e->getMessage());
-                usleep(10000);
-                continue;
+                stream_set_blocking($clientSocket, false);
+
+                $id = (string) intval(microtime(true) * 1000);
+
+                $connection = new AgentSocketConnection($id, $clientSocket);
+
+                $connections[$id] = [
+                    'socket' => $clientSocket,
+                    'connection' => $connection,
+                    'handshake' => '',
+                    'ready' => false,
+                ];
+
+                $service->registerConnection($connection);
+
+                $this->info("Client connected: {$id}");
             }
 
-            stream_set_blocking($clientSocket, false);
+            foreach ($connections as $id => &$client) {
 
-            $connection = new AgentSocketConnection(
-                (string) intval(microtime(true) * 1000),
-                $clientSocket
-            );
+                $socket = $client['socket'];
 
-            $service->registerConnection($connection);
-
-            $handshake = '';
-
-            while (is_resource($clientSocket)) {
-                $chunk = fread($clientSocket, 4096);
-
-                if ($chunk === '' || $chunk === false) {
-                    usleep(20000);
+                if (!is_resource($socket) || feof($socket)) {
+                    $service->disconnect($client['connection']);
+                    fclose($socket);
+                    unset($connections[$id]);
                     continue;
                 }
 
-                $handshake .= $chunk;
-                $this->line($chunk);
-                if (str_contains($handshake, "\r\n\r\n")) {
-                    break;
-                }
-            }
+                $chunk = @fread($socket, 4096);
 
-            if (preg_match('/GET \/ws\/agent HTTP\//', $handshake) === 1) {
-                $this->performHandshake($clientSocket, $handshake);
-                $this->info('Handshake completed');
-            }
-
-            while (is_resource($clientSocket)) {
-                $chunk = fread($clientSocket, 4096);
-
-                if ($chunk === '' || $chunk === false) {
-                    usleep(20000);
+                if ($chunk === false || $chunk === '') {
                     continue;
                 }
 
-                $payload = $connection->receive($chunk);
-                $this->line("Payload: {$payload}");
+                // ---------- Handshake ----------
+                if (!$client['ready']) {
+
+                    $client['handshake'] .= $chunk;
+
+                    if (!str_contains($client['handshake'], "\r\n\r\n")) {
+                        continue;
+                    }
+
+                    if (
+                        preg_match(
+                            '/GET \/ws\/agent HTTP\//',
+                            $client['handshake']
+                        ) === 1
+                    ) {
+                        $this->performHandshake(
+                            $socket,
+                            $client['handshake']
+                        );
+
+                        $client['ready'] = true;
+
+                        $this->info("Handshake completed: {$id}");
+                    }
+
+                    continue;
+                }
+
+                // ---------- WebSocket ----------
+                $payload = $client['connection']->receive($chunk);
 
                 if ($payload === '') {
                     continue;
                 }
 
-                $service->handleMessage($connection, $payload);
+                $this->line("Payload: {$payload}");
+
+                $service->handleMessage(
+                    $client['connection'],
+                    $payload
+                );
             }
 
-            $service->disconnect($connection);
+            unset($client);
+
+            usleep(10000);
         }
     }
 
