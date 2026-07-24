@@ -31,6 +31,12 @@ class ServeAgentWebSocket extends Command
         while (true) {
             try {
                 $clientSocket = @stream_socket_accept($serverSocket, 1);
+                if ($clientSocket === false) {
+                    usleep(10000);
+                    continue;
+                }
+
+                $this->info('Client connected');
 
                 if ($clientSocket === false) {
                     usleep(10000);
@@ -62,7 +68,7 @@ class ServeAgentWebSocket extends Command
                 }
 
                 $handshake .= $chunk;
-
+                $this->line($chunk);
                 if (str_contains($handshake, "\r\n\r\n")) {
                     break;
                 }
@@ -70,6 +76,7 @@ class ServeAgentWebSocket extends Command
 
             if (preg_match('/GET \/ws\/agent HTTP\//', $handshake) === 1) {
                 $this->performHandshake($clientSocket, $handshake);
+                $this->info('Handshake completed');
             }
 
             while (is_resource($clientSocket)) {
@@ -81,6 +88,7 @@ class ServeAgentWebSocket extends Command
                 }
 
                 $payload = $connection->receive($chunk);
+                $this->line("Payload: {$payload}");
 
                 if ($payload === '') {
                     continue;
