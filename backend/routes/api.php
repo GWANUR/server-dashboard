@@ -25,4 +25,4 @@ Route::post('/agent/heartbeat', [AgentController::class, 'heartbeat']);
 
 Route::post('/agent/command', [AgentController::class, 'dispatchCommand'])->middleware('auth:sanctum');
 
-Route::get('/dashboard/settings',)
+// Route::get('/dashboard/settings',)
