@@ -57,13 +57,21 @@ export default function Dashboard() {
     const [stats, setStats] = useState<Stats>({});
     const [loading, setLoading] = useState(true);
     const [user, setUser] = useState<any>();
+    const [data] = useState({
+        cpu: { usage: 0 },
+        ram: { percent: 0 },
+        disk: { used: 0, total: 0 },
+        network: { received_bytes: 0 },
+        load: { one_minute: 0 },
+        uptime: "0m",
+    });
 
     useEffect(() => {
         const load = async () => {
             try {
-                const data = await agent();
+                // const data = await agent();
                 const userData = await thisUser();
-                setStats(data);
+                // setStats(data);
                 setUser(userData);
                 console.log("dataUser", user);
 
