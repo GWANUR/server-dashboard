@@ -65,12 +65,13 @@ class AgentWebSocketService
         $payload = $message['payload'];
 
         Agent::updateOrCreate(
+            ['agent_id' => $payload['agent_id']],
             [
-                'agent_id' => $payload['agent_id'],
-            ],
-            [
-                'status' => 'online',
-                'last_seen' => now(),
+                'hostname' => $payload['hostname'],
+                'os'       => $payload['os'],
+                'arch'     => $payload['arch'],
+                'status'   => 'online',
+                'last_seen'=> now(),
             ]
         );
 
@@ -84,18 +85,11 @@ class AgentWebSocketService
         $payload = $message['payload'];
         $stats = $payload['stats'];
 
-        Agent::where('agent_id', $payload['agent_id'])
-            ->update([
-                'hostname' => $stats['hostname'],
-                'os' => $stats['os'],
-                'arch' => $stats['arch'],
-
-                'cpu_usage' => $stats['cpu']['usage'],
-                'memory_percent' => $stats['memory']['percent'],
-                'disk_percent' => $stats['disk']['percent'],
-
-                'status' => 'online',
-                'last_seen' => now(),
-            ]);
+    Agent::where('agent_id', $payload['agent_id'])->update([
+            'cpu_usage'      => $payload['cpu'],
+            'memory_percent' => $payload['memory'],
+            'disk_percent'   => $payload['disk'],
+            'last_seen'      => now(),
+        ]);
     }
 }

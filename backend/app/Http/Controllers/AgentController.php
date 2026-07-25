@@ -5,9 +5,16 @@ namespace App\Http\Controllers;
 use App\Services\AgentWebSocketService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use App\Models\Agent;
+use App\Http\Resources;
 
 class AgentController extends Controller
 {
+    public function index()
+    {
+        return new AgentResource(Agent::first());
+    }
+
     public function heartbeat(Request $request)
     {
         $payload = $request->all();

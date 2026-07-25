@@ -21,8 +21,4 @@ Route::middleware('auth:sanctum')->get('/system', [SystemMonitorService::class, 
 
 Route::middleware('auth:sanctum')->post('/terminal', [TerminalController::class, 'execute']);
 
-Route::post('/agent/heartbeat', [AgentController::class, 'heartbeat']);
-
-Route::post('/agent/command', [AgentController::class, 'dispatchCommand'])->middleware('auth:sanctum');
-
-// Route::get('/dashboard/settings',)
+Route::get('/agents', [AgentController::class, 'index'])->middleware();

@@ -22,7 +22,7 @@ import {
     Cell,
 } from "recharts";
 import { useEffect, useMemo, useState } from "react";
-import { fetchSystemStats } from "../api/agent";
+import { agent } from "../api/agent";
 
 const COLORS = ["#8b5cf6", "#06b6d4", "#22c55e"];
 
@@ -58,7 +58,7 @@ export default function Dashboard() {
     useEffect(() => {
         const load = async () => {
             try {
-                const data = await fetchSystemStats();
+                const data = await agent();
                 setStats(data);
 
                 setCpuHistory(prev => {
