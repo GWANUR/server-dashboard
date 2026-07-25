@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('server_agents', function (Blueprint $table) {
+        Schema::create('server_agents', function (Blueprint $table) {
             $table->id();
 
             $table->foreignId('user_id')
@@ -16,11 +16,8 @@ return new class extends Migration
                 ->cascadeOnDelete();
 
             $table->string('agent_id')->unique();
-
             $table->string('name');
-
             $table->string('token');
-
             $table->boolean('enabled')->default(true);
 
             $table->timestamps();
