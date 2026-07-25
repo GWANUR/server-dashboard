@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Cache;
 use App\Models\Agent;
 use App\Models\ServerAgent;
 use App\Http\Resources\AgentResource;
-use App\Http\Controllers\Hash;
+use Illuminate\Support\Facades\Hash;
 
 class AgentController extends Controller
 {
@@ -37,11 +37,14 @@ class AgentController extends Controller
             'name' => 'required|string|max:255',
             'token' => 'required|string',
         ]);
-        $hashedToken= Hash::make($data['token']);
-        ServerAgent::create([ 
-            'name'=>$data['name'],
-            'token'=>$hashedToken,
-            'enabled'=>false
+
+        $agent=new Agent();
+
+        ServerAgent::create([
+            'user_id'  => Auth::id(),
+            'name'     => $data['name'],
+            'token'    => Hash::make($data['token']),
+            'enabled'  => false,
         ]);
 
         return response()->json([
