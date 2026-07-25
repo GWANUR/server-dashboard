@@ -13,7 +13,7 @@ import {
   Eye,
   EyeOff
 } from "lucide-react";
-import "index.css"
+import "./index.css";
 
 interface SecretInputProps {
     nameInput: string;
