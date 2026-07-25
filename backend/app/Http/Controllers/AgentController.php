@@ -12,7 +12,15 @@ class AgentController extends Controller
 {
     public function index()
     {
-        return new AgentResource(Agent::first());
+        $agent = Agent::first();
+
+        if (!$agent) {
+            return response()->json([
+                'message' => 'No agents found'
+            ], 404);
+        }
+
+        return new AgentResource($agent);
     }
 
     public function heartbeat(Request $request)

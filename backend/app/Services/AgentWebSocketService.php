@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use Illuminate\Support\Facades\Log;
+use App\Models\Agent;
 
 class AgentWebSocketService
 {
@@ -35,8 +36,8 @@ class AgentWebSocketService
         AgentSocketConnection $connection,
         string $payload
     ): void {
-
         $message = json_decode($payload, true);
+        Log::info('Incoming message', $message);
 
         if (!is_array($message)) {
             return;
@@ -84,12 +85,11 @@ class AgentWebSocketService
     {
         $payload = $message['payload'];
         $stats = $payload['stats'];
-
+        
     Agent::where('agent_id', $payload['agent_id'])->update([
-            'cpu_usage'      => $payload['cpu'],
-            'memory_percent' => $payload['memory'],
-            'disk_percent'   => $payload['disk'],
-            'last_seen'      => now(),
-        ]);
-    }
+        'cpu_usage'      => $stats['cpu']['usage'],
+        'memory_percent' => $stats['ram']['percent'],
+        'disk_percent'   => $stats['disk']['percent'],
+        'last_seen'      => now(),
+    ]);
 }
