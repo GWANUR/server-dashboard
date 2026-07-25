@@ -96,7 +96,7 @@ export default function AgentPage(){
                                 </tr>
                             </thead>
                             <tbody>
-                                {agents?.map((el: Agent) => (
+                                {agents.allAgents?.map((el: Agent) => (
                                     <tr key={el.id}>
                                         {edit && (
                                             <td>
