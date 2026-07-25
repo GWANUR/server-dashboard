@@ -87,13 +87,14 @@ section#login {
             }
         }
         .pbody{
-            display: flex;
             flex-direction: column;
-            padding: 80px 30px 20px;
-            min-width: 400px;
-            min-height: 300px;
             width: 40%;
+            min-width: 400px;
             height: 30%;
+            min-height: 300px;
+            padding: 80px 30px 20px;
+            display: flex;
+            gap: 10px;
         }
     }
 }
@@ -235,19 +236,24 @@ body {
             border-radius: 5px;
             margin-top: 60px;
         }
-        .btn_icon {
+        .inputGroup{
             display: flex;
+            flex-direction: row;
+            gap: 5px;
+        }
+        .btn_icon {
+            border: 1px solid var(--text-color);
+            color: var(--text-color);
+            cursor: pointer;
+            background: 0 0;
+            border-radius: 5px;
             align-items: center;
             gap: 10px;
             padding: 10px 20px;
-
-            background: transparent;
-            border: 1px solid var(--text-color);
-            color: var(--text-color);
-
-            border-radius: 5px;
-            cursor: pointer;
-            transition: .2s;
+            transition: all .2s;
+            display: flex;
+            width: min-content;
+            margin: 0 auto;
         }
 
         .btn_icon:hover {
@@ -261,6 +267,7 @@ body {
             border-radius: 5px;
             justify-content: space-between;
             padding: 5px 10px;
+            background: transparent;
 
             input{
                 background: transparent;
@@ -271,6 +278,10 @@ body {
             input:focus {
                 outline: none;
             }
+            input:focus-visible {
+                outline: 0px;
+            }
+
             .btn{
                 color: var(--text-color);
                 background-color: transparent;

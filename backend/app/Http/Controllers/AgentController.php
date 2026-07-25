@@ -31,6 +31,23 @@ class AgentController extends Controller
         return response()->json(['allAgents' => $agents]);
     }
 
+    public function saveAgent(Request $request){
+        $data = $request->validate([
+            'name' => 'required|string|max:255',
+            'token' => 'required|string',
+        ]);
+        $hashedToken= Hash::make($data['token']);
+        ServerAgent::create([ 
+            'name'=>$data['name'],
+            'token'=>$hashedToken,
+            'enabled'=>false
+        ]);
+
+        return response()->json([
+            'message' => 'Server Agent Created'
+        ]);
+    }
+
     public function heartbeat(Request $request)
     {
         $payload = $request->all();

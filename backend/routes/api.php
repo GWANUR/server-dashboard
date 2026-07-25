@@ -11,14 +11,16 @@ Route::middleware("auth:sanctum")->get("/user", function (Request $request) {
     return $request->user();
 });
 
-Route::post('/login', [AuthController::class, 'login'])->middleware();
+Route::post('/login', [AuthController::class, 'login'])->middleware('auth:sanctum');
 
-Route::middleware('auth:sanctum')->get('/users', [UserController::class, 'index'])->middleware();
+Route::middleware('auth:sanctum')->get('/users', [UserController::class, 'index'])->middleware('auth:sanctum');
 
 Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
 
 Route::middleware('auth:sanctum')->post('/terminal', [TerminalController::class, 'execute']);
 
-Route::get('/agents', [AgentController::class, 'index'])->middleware();
+Route::get('/agents', [AgentController::class, 'index'])->middleware('auth:sanctum');
 
-Route::get('/allAgents', [AgentController::class, 'getAll'])->middleware();
+Route::get('/allAgents', [AgentController::class, 'getAll'])->middleware('auth:sanctum');
+
+Route::post('/saveAgent', [AgentController::class, 'saveAgent'])->middleware('auth:sanctum'); 

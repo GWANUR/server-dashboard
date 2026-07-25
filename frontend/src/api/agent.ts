@@ -20,3 +20,8 @@ export async function allAgent() {
     const { data } = await api.get("/allAgents");
     return data;
 }
+
+export async function saveAgent(name:string, token:string) {
+    const { data } = await api.post("/saveAgent",{name:name ,token:token} );
+    return data;
+};
