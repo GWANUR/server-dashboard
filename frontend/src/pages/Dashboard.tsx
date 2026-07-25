@@ -114,7 +114,7 @@ export default function Dashboard() {
             ):(
                 <>
             <header>
-                <h2>Welcome back, { user.name }!</h2>
+                <h2>Welcome back, { user?.name ?? "User" }!</h2>
                 <div className="rightheader">
                     <div className="server_controll">
                         <div className="btn_icon"><Play size={18} color="#fff" /></div>
