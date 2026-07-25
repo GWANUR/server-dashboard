@@ -109,7 +109,7 @@ export default function Dashboard() {
     return (
         <section id="dashboard" className="page">
             <header>
-                <h2>Welcome back, { user.username }!</h2>
+                <h2>Welcome back, { user.name }!</h2>
                 <div className="rightheader">
                     <div className="server_controll">
                         <div className="btn_icon"><Play size={18} color="#fff" /></div>
