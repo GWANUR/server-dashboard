@@ -9,6 +9,7 @@ import {
   Users,
   LogOut,
   Settings,
+  HatGlasses,
 } from "lucide-react";
 
 
@@ -65,6 +66,12 @@ export default function MainLayout() {
                             <Link to="/users">
                                 <Users size={18} />
                                 Users
+                            </Link>
+                        </li>
+                        <li>
+                            <Link to="/agents">
+                                <HatGlasses size={18} />
+                                Agents
                             </Link>
                         </li>
                         <li>

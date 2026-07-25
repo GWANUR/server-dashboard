@@ -23,6 +23,7 @@ import {
 } from "recharts";
 import { useEffect, useMemo, useState } from "react";
 import { agent } from "../api/agent";
+import { thisUser } from "../api/user"
 
 const COLORS = ["#8b5cf6", "#06b6d4", "#22c55e"];
 
@@ -54,12 +55,15 @@ type Stats = {
 export default function Dashboard() {
     const [stats, setStats] = useState<Stats>({});
     const [loading, setLoading] = useState(true);
+    const [user, setUser] = useState<any>();
 
     useEffect(() => {
         const load = async () => {
             try {
                 const data = await agent();
+                const user = await thisUser();
                 setStats(data);
+                setUser(user);
 
                 setCpuHistory(prev => {
                     const point = {
@@ -105,7 +109,7 @@ export default function Dashboard() {
     return (
         <section id="dashboard" className="page">
             <header>
-                <h2>Welcome back, Alex!</h2>
+                <h2>Welcome back, { user.username }!</h2>
                 <div className="rightheader">
                     <div className="server_controll">
                         <div className="btn_icon"><Play size={18} color="#fff" /></div>

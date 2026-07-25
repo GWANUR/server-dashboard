@@ -9,6 +9,7 @@ import Terminal_page from "../pages/Terminal";
 import Settings from "../pages/Settings";
 import Log from "../pages/Log";
 import Users_page from "../pages/UsersPage"; 
+import AgentPage from "../pages/Agents_page"; 
 import ProtectedRoute from "./ProtectedRoute";
 
 export const router = createBrowserRouter([
@@ -41,6 +42,10 @@ export const router = createBrowserRouter([
             {
                 path: "/settings",
                 element: <Settings />,
+            },
+            {
+                path: "/agents",
+                element: <AgentPage />,
             },
         ],
     },

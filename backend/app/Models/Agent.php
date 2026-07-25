@@ -11,10 +11,11 @@ class Agent extends Model
         'hostname',
         'os',
         'arch',
-        'cpu_usage',
-        'memory_percent',
-        'disk_percent',
-        'status',
+        'output',
         'last_seen',
+    ];
+
+    protected $casts = [
+        'output' => 'array',
     ];
 }

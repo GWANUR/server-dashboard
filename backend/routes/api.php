@@ -20,3 +20,5 @@ Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logo
 Route::middleware('auth:sanctum')->post('/terminal', [TerminalController::class, 'execute']);
 
 Route::get('/agents', [AgentController::class, 'index'])->middleware();
+
+Route::post('/allAgents', [AgentController::class, getAll])->middleware();

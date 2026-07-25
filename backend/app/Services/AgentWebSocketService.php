@@ -89,10 +89,8 @@ class AgentWebSocketService
         $stats = $payload['stats'];
 
     Agent::where('agent_id', $payload['agent_id'])->update([
-        'cpu_usage'      => $stats['cpu']['usage'],
-        'memory_percent' => $stats['ram']['percent'],
-        'disk_percent'   => $stats['disk']['percent'],
-        'last_seen'      => now(),
+        'output'    => $payload['stats'],
+        'last_seen' => now(),
     ]);
     }
 }

@@ -6,6 +6,7 @@ use App\Services\AgentWebSocketService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use App\Models\Agent;
+use App\Models\ServerAgent;
 use App\Http\Resources\AgentResource;
 
 class AgentController extends Controller
@@ -21,6 +22,13 @@ class AgentController extends Controller
         }
 
         return new AgentResource($agent);
+    }
+
+    public function getAll(Request $request)
+    {
+        $agents = ServerAgent::all();
+
+        return response()->json(['allAgents' => $agents]);
     }
 
     public function heartbeat(Request $request)
