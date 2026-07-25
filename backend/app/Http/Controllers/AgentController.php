@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Cache;
 use App\Models\Agent;
 use App\Models\ServerAgent;
 use App\Http\Resources\AgentResource;
+use App\Http\Controllers\Hash;
 
 class AgentController extends Controller
 {
