@@ -63,16 +63,18 @@ class AgentWebSocketService
 
     protected function handleAuth(AgentSocketConnection $connection, array $message): void
     {
+        Log::info('AUTH MESSAGE', $message);
+
         $payload = $message['payload'];
 
         Agent::updateOrCreate(
             ['agent_id' => $payload['agent_id']],
             [
-                'hostname' => $payload['hostname'],
-                'os'       => $payload['os'],
-                'arch'     => $payload['arch'],
-                'status'   => 'online',
-                'last_seen'=> now(),
+                'hostname'  => $payload['hostname'],
+                'os'        => $payload['os'],
+                'arch'      => $payload['arch'],
+                'status'    => 'online',
+                'last_seen' => now(),
             ]
         );
 
@@ -85,11 +87,12 @@ class AgentWebSocketService
     {
         $payload = $message['payload'];
         $stats = $payload['stats'];
-        
+
     Agent::where('agent_id', $payload['agent_id'])->update([
         'cpu_usage'      => $stats['cpu']['usage'],
         'memory_percent' => $stats['ram']['percent'],
         'disk_percent'   => $stats['disk']['percent'],
         'last_seen'      => now(),
     ]);
+    }
 }
