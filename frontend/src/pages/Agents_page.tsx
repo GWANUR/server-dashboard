@@ -34,7 +34,7 @@ export default function AgentPage(){
             <section id="agents" className="page">
                 <div className="window_table_agents">
                     <div className="table_head">
-                        <div className="search_agent input_icon">
+                        <div className="search_agent">
                             <span className="label">Agent token:</span>
                             <input type="text" name="agent_token"></input>
                         </div>
