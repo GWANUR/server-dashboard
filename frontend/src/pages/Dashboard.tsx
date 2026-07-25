@@ -24,6 +24,7 @@ import {
 import { useEffect, useMemo, useState } from "react";
 import { agent } from "../api/agent";
 import { thisUser } from "../api/user"
+import { LoadPage } from "./LoadPage";
 
 const COLORS = ["#8b5cf6", "#06b6d4", "#22c55e"];
 
@@ -61,9 +62,9 @@ export default function Dashboard() {
         const load = async () => {
             try {
                 const data = await agent();
-                const user = await thisUser();
+                const userData = await thisUser();
                 setStats(data);
-                setUser(user);
+                setUser(userData);
 
                 setCpuHistory(prev => {
                     const point = {
@@ -108,6 +109,10 @@ export default function Dashboard() {
 
     return (
         <section id="dashboard" className="page">
+            {loading ? (
+                <LoadPage />
+            ):(
+                <>
             <header>
                 <h2>Welcome back, { user.name }!</h2>
                 <div className="rightheader">
@@ -196,6 +201,8 @@ export default function Dashboard() {
                     </div>
                 </div>
             </div>
+            </>
+            )}
         </section>
     );
 }
