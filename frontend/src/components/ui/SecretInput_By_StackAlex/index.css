@@ -6,3 +6,18 @@
     padding: 5px 10px;
     display: flex;
 }
+.SecretInput__SA input{
+    color: var(--text-color);
+    background: 0 0;
+    border: none;
+    width: 100%;
+}
+.SecretInput__SA input:focus {
+    outline: none;
+}
+.SecretInput__SA button {
+    background: transparent;
+    color: var(--text-color);
+    border: none;
+    cursor:pointer;
+}

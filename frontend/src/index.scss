@@ -55,7 +55,45 @@ section#login {
         }
     }
 }
-
+#popup{
+    display: flex;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: #0000003d;
+    backdrop-filter: blur(5px);
+    align-items: center;
+    justify-content: center;
+    .popup_window {
+        background: var(--background);
+        border-radius: 20px;
+        position: relative;
+        .phead{
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: calc(100% - 40px);
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 20px;
+            button{
+                cursor: pointer;
+                padding: 10px;
+            }
+        }
+        .pbody{
+            display: flex;
+            flex-direction: column;
+            padding: 60px 30px 20px;
+            min-width: 400px;
+            min-height: 300px;
+            width: 40%;
+            height: 30%;
+        }
+    }
+}
 div.main-layout {
     display: grid;
     grid-template-columns: 1fr 5fr;

@@ -19,10 +19,16 @@ interface SecretInputProps {
     nameInput: string;
 }
 export function SecretInput({ nameInput }: SecretInputProps){
-    const [password,setPas] = useState(false)
+    const [password,setPas] = useState(true)
     return (
         <div className="SecretInput__SA">
-            <input name={nameInput} type={password ? "password" : "text"}></input>
+            <input 
+                name={nameInput} 
+                type={password ? "password" : "text"}
+                autoComplete="off"
+                spellCheck={false}
+                autoCapitalize="off"
+            />
             <button
             onClick={()=> setPas(!password)}
             >
