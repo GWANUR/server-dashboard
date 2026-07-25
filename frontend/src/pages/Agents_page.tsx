@@ -1,11 +1,14 @@
 import {
   SmilePlus,
-  Pencil
+  Pencil,
+  PencilOff,
+  Trash
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { LoadPage } from "./LoadPage";
 import { thisUser } from "../api/user"
 import { allAgent } from "../api/agent"
+import type { Agent } from "../api/agent"
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 
@@ -37,6 +40,15 @@ export default function AgentPage(){
             navigate("/");
         }
     }, [isUserLoading, user, navigate]);
+
+    const [edit, setEdit] = useState(false);
+    function handleEdit(stat:boolean) {
+        if (stat) {
+            setEdit(false)
+        } else {
+            setEdit(true)
+        }
+    }
         return (
             <section id="agents" className="page">
                 <div className="window_table_agents">
@@ -49,9 +61,22 @@ export default function AgentPage(){
                             <button className="btn_icon">
                                 <SmilePlus size={18}/>
                             </button>
-                            <button className="btn_icon">
-                                <Pencil size={18}/>
-                            </button>
+                            {!edit ?(
+                                <button className="btn_icon"
+                                  onClick={()=>handleEdit(edit)}>
+                                    <Pencil size={18}/>
+                                </button>
+                            ) : (
+                                <>
+                                    <button className="btn_icon"
+                                      onClick={()=>handleEdit(edit)}>
+                                        <PencilOff size={18}/>
+                                    </button>
+                                    <button className="btn_icon">
+                                        <Trash size={18}/>
+                                    </button>
+                                </>
+                            )}
                         </div>
                     </div>
                     {isUserLoading || isAgentsLoading ? (
@@ -60,7 +85,10 @@ export default function AgentPage(){
                         <table>
                             <thead>
                                 <tr>
-                                    <th></th>
+                                    {edit && (
+                                        <th></th>
+                                    )}
+                                    <th>ID</th>
                                     <th>Name</th>
                                     <th>Owner</th>
                                     <th>Add at</th>
@@ -68,14 +96,18 @@ export default function AgentPage(){
                                 </tr>
                             </thead>
                             <tbody>
-                                {agents?.map((el) => (
+                                {agents?.map((el: Agent) => (
                                     <tr key={el.id}>
-                                        <td>
-                                            <input type="checkbox" />
-                                        </td>
+                                        {edit && (
+                                            <td>
+                                                <input type="checkbox" id={`agent-${el.agent_id}`}/>
+                                            </td>
+                                        )}
+                                        <td>{el.agent_id}</td>
                                         <td>{el.name}</td>
-                                        <td>{el.email}</td>
-                                        <td>{el.type}</td>
+                                        <td>{el.user_id}</td>
+                                        <td>{el.created_at}</td>
+                                        <td>{el.enabled}</td>
                                     </tr>
                                 ))}
                             </tbody>
