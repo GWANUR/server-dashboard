@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('server_agents', function (Blueprint $table) {
+        Schema::table('server_agents', function (Blueprint $table) {
             $table->id();
 
             $table->foreignId('user_id')

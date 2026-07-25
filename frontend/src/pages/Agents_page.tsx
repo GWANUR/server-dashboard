@@ -6,30 +6,37 @@ import { useState, useEffect } from "react";
 import { LoadPage } from "./LoadPage";
 import { thisUser } from "../api/user"
 import { allAgent } from "../api/agent"
+import { useQuery } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
+
 
 export default function AgentPage(){
-    const [user, setUser] = useState<any>();
-    const [loading, setLoading] = useState<boolean>(false);
+    
+    const navigate = useNavigate();
+    const {
+        data: user,
+        isLoading: isUserLoading,
+        isError: isUserError,
+        error: userError,
+    } = useQuery({
+        queryKey: ["user"],
+        queryFn: thisUser,
+    });
 
-    useEffect(() =>{
-        setLoading(true);
-        const loadData= async ()=>{
-            try {
-                const [userData, tableAgents] = await Promise.all([
-                    thisUser(),
-                    allAgent()
-                ]);
+    const {
+        data: agents,
+        isLoading: isAgentsLoading,
+    } = useQuery({
+        queryKey: ["agents"],
+        queryFn: allAgent,
+        enabled: user?.type === "admin",
+    });
 
-                console.log(userData);
-                setUser(userData)
-                console.log(tableAgents);
-
-            } catch(error){
-                console.error('Error loading data:', error);
-            }
+    useEffect(() => {
+        if (!isUserLoading && user?.type !== "admin") {
+            navigate("/");
         }
-        loadData();
-    })
+    }, [isUserLoading, user, navigate]);
         return (
             <section id="agents" className="page">
                 <div className="window_table_agents">
@@ -47,7 +54,7 @@ export default function AgentPage(){
                             </button>
                         </div>
                     </div>
-                    {!loading ? (
+                    {isUserLoading || isAgentsLoading ? (
                         <LoadPage/>
                     ) : (
                         <table>
@@ -61,8 +68,16 @@ export default function AgentPage(){
                                 </tr>
                             </thead>
                             <tbody>
-                                <td><input type="checkbox" name="" id="" /></td>
-                                <td></td>
+                                {agents?.map((el) => (
+                                    <tr key={el.id}>
+                                        <td>
+                                            <input type="checkbox" />
+                                        </td>
+                                        <td>{el.name}</td>
+                                        <td>{el.email}</td>
+                                        <td>{el.type}</td>
+                                    </tr>
+                                ))}
                             </tbody>
                         </table>
                     )}

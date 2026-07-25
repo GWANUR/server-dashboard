@@ -6,5 +6,6 @@ export async function agent() {
 }
 
 export async function allAgent() {
-    return api.get('/allAgents');
+    const { data } = await api.get("/allAgents");
+    return data;
 }
