@@ -1,0 +1,8 @@
+.SecretInput__SA{    
+    border: 1px solid var(--text-color);
+    border-radius: 5px;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 10px;
+    display: flex;
+}

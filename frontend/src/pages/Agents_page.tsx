@@ -9,6 +9,7 @@ import { useState, useEffect } from "react";
 import { LoadPage } from "./LoadPage";
 import { thisUser } from "../api/user"
 import { allAgent } from "../api/agent"
+import { SecretInput } from "../components/ui/SecretInput_By_StackAlex/SecretInput"
 import type { Agent } from "../api/agent"
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
@@ -43,6 +44,7 @@ export default function AgentPage(){
     }, [isUserLoading, user, navigate]);
 
     const [edit, setEdit] = useState(false);
+    const [popup, setPopup] = useState(false);
     function handleEdit(stat:boolean) {
         if (stat) {
             setEdit(false)
@@ -52,6 +54,26 @@ export default function AgentPage(){
     }
         return (
             <section id="agents" className="page">
+                {popup && (
+                    <div id="popup">
+                        <div className="popup_window">
+                            <div className="phead">
+                                <h2>Agent</h2>
+                                <button onClick={() => setPopup(false)}>x</button>
+                            </div>
+                            <div className="pbody">
+                                <div className="inputGroup">
+                                    <label>Name:</label>
+                                    <input type="text"></input> 
+                                </div>
+                                <div className="inputGroup">
+                                    <label>Token:</label>
+                                    <SecretInput nameInput="agentToken"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
                 <div className="window_table_agents">
                     <div className="table_head">
                         <div className="search_agent input_icon">
@@ -59,7 +81,8 @@ export default function AgentPage(){
                             <Search size={20} />
                         </div>
                         <div className="active">
-                            <button className="btn_icon">
+                            <button className="btn_icon"
+                            onClick={() => setPopup(true)}>
                                 <SmilePlus size={18}/>
                             </button>
                             {!edit ?(
