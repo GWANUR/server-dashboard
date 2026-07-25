@@ -17,8 +17,6 @@ Route::middleware('auth:sanctum')->get('/users', [UserController::class, 'index'
 
 Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
 
-Route::middleware('auth:sanctum')->get('/system', [SystemMonitorService::class, 'getStats']);
-
 Route::middleware('auth:sanctum')->post('/terminal', [TerminalController::class, 'execute']);
 
 Route::get('/agents', [AgentController::class, 'index'])->middleware();

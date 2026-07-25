@@ -6,7 +6,7 @@ use App\Services\AgentWebSocketService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use App\Models\Agent;
-use App\Http\Resources;
+use App\Http\Resources\AgentResource;
 
 class AgentController extends Controller
 {
