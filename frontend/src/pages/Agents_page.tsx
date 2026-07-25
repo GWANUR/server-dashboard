@@ -7,7 +7,7 @@ import { LoadPage } from "./LoadPage";
 import { thisUser } from "../api/user"
 import { allAgent } from "../api/agent"
 
-export function AgentPage(){
+export default function AgentPage(){
     const [user, setUser] = useState<any>();
     const [loading, setLoading] = useState<boolean>(false);
 
