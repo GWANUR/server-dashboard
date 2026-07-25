@@ -60,28 +60,42 @@ class AgentWebSocketService
         }
     }
 
-    protected function handleAuth(
-        AgentSocketConnection $connection,
-        array $message
-    ): void {
+    protected function handleAuth(AgentSocketConnection $connection, array $message): void
+    {
+        $payload = $message['payload'];
 
-        Log::info("Agent auth", $message);
+        Agent::updateOrCreate(
+            [
+                'agent_id' => $payload['agent_id'],
+            ],
+            [
+                'status' => 'online',
+                'last_seen' => now(),
+            ]
+        );
 
         $connection->send([
-            'type' => 'auth_ok'
+            'type' => 'auth_ok',
         ]);
     }
 
-    protected function handleStats(
-        AgentSocketConnection $connection,
-        array $message
-    ): void {
+    protected function handleStats(AgentSocketConnection $connection, array $message): void
+    {
+        $payload = $message['payload'];
+        $stats = $payload['stats'];
 
-        $payload = $message['payload'] ?? [];
+        Agent::where('agent_id', $payload['agent_id'])
+            ->update([
+                'hostname' => $stats['hostname'],
+                'os' => $stats['os'],
+                'arch' => $stats['arch'],
 
-        Log::info("Agent stats", [
-            'agent' => $payload['agent_id'] ?? null,
-            'stats' => $payload['stats'] ?? [],
-        ]);
+                'cpu_usage' => $stats['cpu']['usage'],
+                'memory_percent' => $stats['memory']['percent'],
+                'disk_percent' => $stats['disk']['percent'],
+
+                'status' => 'online',
+                'last_seen' => now(),
+            ]);
     }
 }

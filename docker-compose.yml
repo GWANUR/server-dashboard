@@ -19,6 +19,8 @@ services:
     build: ./backend
     expose:
       - "8000"
+    volumes:
+      - ./backend:/var/www
     # Важно: не пробрасывай порт наружу, Nginx ходит внутри сети
     environment:
       - APP_ENV=local
@@ -38,6 +40,8 @@ services:
     command: php artisan agent:ws --host=0.0.0.0 --port=8001
     expose:
       - "8001"
+    volumes:
+      - ./backend:/var/www
     environment:
       - APP_ENV=local
       - DB_CONNECTION=pgsql
