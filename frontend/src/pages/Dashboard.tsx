@@ -73,7 +73,7 @@ export default function Dashboard() {
                 const userData = await thisUser();
                 // setStats(data);
                 setUser(userData);
-                console.log("dataUser", user);
+                console.log("dataUser", userData);
 
                 setCpuHistory(prev => {
                     const point = {
@@ -103,6 +103,7 @@ export default function Dashboard() {
         const interval = window.setInterval(load, 5000);
         return () => window.clearInterval(interval);
     }, []);
+    console.log("User:", user);
 
     type CpuPoint = {
         time: string;
