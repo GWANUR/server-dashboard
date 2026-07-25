@@ -22,6 +22,7 @@ import {
     Cell,
 } from "recharts";
 import { useEffect, useMemo, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { agent } from "../api/agent";
 import { thisUser } from "../api/user"
 import { LoadPage } from "./LoadPage";
@@ -55,8 +56,6 @@ type Stats = {
 
 export default function Dashboard() {
     const [stats, setStats] = useState<Stats>({});
-    const [loading, setLoading] = useState(true);
-    const [user, setUser] = useState<any>();
     const [data] = useState({
         cpu: { usage: 0 },
         ram: { percent: 0 },
@@ -66,44 +65,15 @@ export default function Dashboard() {
         uptime: "0m",
     });
 
-    useEffect(() => {
-        const load = async () => {
-            try {
-                // const data = await agent();
-                const userData = await thisUser();
-                // setStats(data);
-                setUser(userData);
-                console.log("dataUser", userData);
-
-                setCpuHistory(prev => {
-                    const point = {
-                        time: new Date().toLocaleTimeString("ru-RU", {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                            second: "2-digit",
-                        }),
-                        usage: data.cpu.usage,
-                    };
-
-                    const history = [...prev, point];
-
-                    // оставляем только последние 60 минут
-                    return history.slice(-720);
-                });
-
-            } catch (e) {
-                console.error(e);
-            } finally {
-                if (loading) {
-                    setLoading(false);
-                }
-            }
-        };
-        load();
-        const interval = window.setInterval(load, 5000);
-        return () => window.clearInterval(interval);
-    }, []);
-    console.log("User:", user);
+    const {
+        data: user,
+        isLoading,
+        error,
+    } = useQuery({
+        queryKey: ["user"],
+        queryFn: thisUser,
+        staleTime: 5 * 60 * 1000,
+    });
 
     type CpuPoint = {
         time: string;
@@ -118,99 +88,99 @@ export default function Dashboard() {
     ], [stats.ram?.percent]);
     return (
         <section id="dashboard" className="page">
-            {loading ? (
+            {isLoading ? (
                 <LoadPage />
             ):(
                 <>
-            <header>
-                <h2>Welcome back, { user?.name ?? "User" }!</h2>
-                <div className="rightheader">
-                    <div className="server_controll">
-                        <div className="btn_icon"><Play size={18} color="#fff" /></div>
-                        <div className="btn_icon"><Power size={18} color="#fff" /></div>
-                        <div className="btn_icon"><RotateCcw size={18} color="#fff" /></div>
+                    <header>
+                        <h2>Welcome back, { user?.name }!</h2>
+                        <div className="rightheader">
+                            <div className="server_controll">
+                                <div className="btn_icon"><Play size={18} color="#fff" /></div>
+                                <div className="btn_icon"><Power size={18} color="#fff" /></div>
+                                <div className="btn_icon"><RotateCcw size={18} color="#fff" /></div>
+                            </div>
+                            <div className="server_active">
+                                <span className="label">Server:</span>
+                                <span className="value">Online<CircleCheck size={18} color="green" /></span>
+                            </div>
+                        </div>
+                    </header>
+                    <div className="systemstat">
+                        <h2>Server Status</h2>
+                        <div className="all_system">
+                            <div className="cpu_stat">
+                                <Cpu size={60} className="icon" />
+                                <span className="label">CPU Usage:</span>
+                                <span className="value">{`${stats.cpu?.usage ?? 0}%`}</span>
+                            </div>
+                            <div className="ram_stat">
+                                <MemoryStick size={60} className="icon" />
+                                <span className="label">RAM Usage:</span>
+                                <span className="value">{`${stats.ram?.percent ?? 0}%`}</span>
+                            </div>
+                            <div className="disk_stat">
+                                <HardDrive size={60} className="icon" />
+                                <span className="label">Disk Usage:</span>
+                                <span className="value">{`${stats.disk?.used ?? 0}/${stats.disk?.total ?? 0} GB`}</span>
+                            </div>
+                            <div className="network_stat">
+                                <Network size={60} className="icon" />
+                                <span className="label">Network speed:</span>
+                                <span className="value">{`${stats.network?.received_bytes ?? 0} bytes`}</span>
+                            </div>
+                        </div>
+                        <hr />
                     </div>
-                    <div className="server_active">
-                        <span className="label">Server:</span>
-                        <span className="value">Online<CircleCheck size={18} color="green" /></span>
+                    <div className="services_stats">
+                        <h2>Services Status</h2>
+                        <div className="all_services">
+                            <div className="running">
+                                <span className="label">Load avg:</span>
+                                <span className="value">{`${stats.load?.one_minute ?? 0}`}</span>
+                            </div>
+                            <div className="active_containers">
+                                <span className="label">Uptime:</span>
+                                <span className="value">{stats.uptime ?? 0}</span>
+                            </div>
+                        </div>
+                        <hr />
                     </div>
-                </div>
-            </header>
-            <div className="systemstat">
-                <h2>Server Status</h2>
-                <div className="all_system">
-                    <div className="cpu_stat">
-                        <Cpu size={60} className="icon" />
-                        <span className="label">CPU Usage:</span>
-                        <span className="value">{loading ? "—" : `${stats.cpu?.usage ?? 0}%`}</span>
+                    <div className="graph">
+                        <h2>Server Performance</h2>
+                        <div className="all_graph">
+                            <div className="cpugraph">
+                                <span className="label">CPU Usage</span>
+                                <ResponsiveContainer width="100%" height={300}>
+                                    <LineChart data={cpuHistory}>
+                                        <CartesianGrid strokeDasharray="3 3" />
+                                        <XAxis dataKey="time" />
+                                        <YAxis domain={[0, 100]} />
+                                        <Tooltip />
+                                        <Line
+                                            type="monotone"
+                                            dataKey="usage"
+                                            stroke="#7c3aed"
+                                            strokeWidth={2}
+                                            dot={false}
+                                        />
+                                    </LineChart>
+                                </ResponsiveContainer>
+                            </div>
+                            <div className="ramgraph">
+                                <span className="label">RAM Usage</span>
+                                <ResponsiveContainer width="100%" height={300}>
+                                    <PieChart>
+                                        <Pie data={ramData} dataKey="value" nameKey="name" outerRadius={100}>
+                                            {ramData.map((_, index) => (<Cell key={index} fill={COLORS[index]} />))}
+                                        </Pie>
+                                        <Tooltip />
+                                    </PieChart>
+                                </ResponsiveContainer>
+                            </div>
+                        </div>
                     </div>
-                    <div className="ram_stat">
-                        <MemoryStick size={60} className="icon" />
-                        <span className="label">RAM Usage:</span>
-                        <span className="value">{loading ? "—" : `${stats.ram?.percent ?? 0}%`}</span>
-                    </div>
-                    <div className="disk_stat">
-                        <HardDrive size={60} className="icon" />
-                        <span className="label">Disk Usage:</span>
-                        <span className="value">{loading ? "—" : `${stats.disk?.used ?? 0}/${stats.disk?.total ?? 0} GB`}</span>
-                    </div>
-                    <div className="network_stat">
-                        <Network size={60} className="icon" />
-                        <span className="label">Network speed:</span>
-                        <span className="value">{loading ? "—" : `${stats.network?.received_bytes ?? 0} bytes`}</span>
-                    </div>
-                </div>
-                <hr />
-            </div>
-            <div className="services_stats">
-                <h2>Services Status</h2>
-                <div className="all_services">
-                    <div className="running">
-                        <span className="label">Load avg:</span>
-                        <span className="value">{loading ? "—" : `${stats.load?.one_minute ?? 0}`}</span>
-                    </div>
-                    <div className="active_containers">
-                        <span className="label">Uptime:</span>
-                        <span className="value">{loading ? "—" : stats.uptime ?? 0}</span>
-                    </div>
-                </div>
-                <hr />
-            </div>
-            <div className="graph">
-                <h2>Server Performance</h2>
-                <div className="all_graph">
-                    <div className="cpugraph">
-                        <span className="label">CPU Usage</span>
-                        <ResponsiveContainer width="100%" height={300}>
-                            <LineChart data={cpuHistory}>
-                                <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis dataKey="time" />
-                                <YAxis domain={[0, 100]} />
-                                <Tooltip />
-                                <Line
-                                    type="monotone"
-                                    dataKey="usage"
-                                    stroke="#7c3aed"
-                                    strokeWidth={2}
-                                    dot={false}
-                                />
-                            </LineChart>
-                        </ResponsiveContainer>
-                    </div>
-                    <div className="ramgraph">
-                        <span className="label">RAM Usage</span>
-                        <ResponsiveContainer width="100%" height={300}>
-                            <PieChart>
-                                <Pie data={ramData} dataKey="value" nameKey="name" outerRadius={100}>
-                                    {ramData.map((_, index) => (<Cell key={index} fill={COLORS[index]} />))}
-                                </Pie>
-                                <Tooltip />
-                            </PieChart>
-                        </ResponsiveContainer>
-                    </div>
-                </div>
-            </div>
-            </>
+                </>
             )}
         </section>
     );
