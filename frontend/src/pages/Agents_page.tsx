@@ -2,7 +2,8 @@ import {
   SmilePlus,
   Pencil,
   PencilOff,
-  Trash
+  Trash,
+  Search
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { LoadPage } from "./LoadPage";
@@ -53,9 +54,9 @@ export default function AgentPage(){
             <section id="agents" className="page">
                 <div className="window_table_agents">
                     <div className="table_head">
-                        <div className="search_agent">
-                            <span className="label">Agent token:</span>
+                        <div className="search_agent input_icon">
                             <input type="text" name="agent_token"></input>
+                            <Search size={20} />
                         </div>
                         <div className="active">
                             <button className="btn_icon">
