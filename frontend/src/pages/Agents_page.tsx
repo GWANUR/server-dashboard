@@ -3,7 +3,8 @@ import {
   Pencil,
   PencilOff,
   Trash,
-  Search
+  Search,
+  Save
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { LoadPage } from "./LoadPage";
@@ -52,24 +53,36 @@ export default function AgentPage(){
             setEdit(true)
         }
     }
+
+    const [agentName, setAgentName] = useState("");
+    const [agentToken, setAgentToken] = useState("");
+    function handleSaveAgent() {
+
+    }
         return (
             <section id="agents" className="page">
                 {popup && (
                     <div id="popup">
                         <div className="popup_window">
                             <div className="phead">
-                                <h2>Agent</h2>
+                                <span>Agent</span>
                                 <button onClick={() => setPopup(false)}>x</button>
                             </div>
                             <div className="pbody">
                                 <div className="inputGroup">
                                     <label>Name:</label>
-                                    <input type="text"></input> 
+                                    <input type="text" name="nameAgent" className="input_icon"
+                                        value={agentName} onChange={(e)=>{
+                                            setAgentName(e.target.value);
+                                        }}
+                                    /> 
                                 </div>
                                 <div className="inputGroup">
                                     <label>Token:</label>
-                                    <SecretInput nameInput="agentToken"/>
+                                    <SecretInput nameInput="agentToken" value={agentToken} onChange={setAgentToken}/>
                                 </div>
+                                <button
+                                onClick={() => handleSaveAgent()}>Save <Save size={16}/></button>
                             </div>
                         </div>
                     </div>

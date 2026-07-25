@@ -17,22 +17,27 @@ import "./index.css";
 
 interface SecretInputProps {
     nameInput: string;
+    value: string;
+    onChange: (value: string) => void;
 }
-export function SecretInput({ nameInput }: SecretInputProps){
-    const [password,setPas] = useState(true)
+export function SecretInput({ nameInput, value, onChange }: SecretInputProps){
+    const [hidden,setHidden] = useState(true)
     return (
         <div className="SecretInput__SA">
             <input 
                 name={nameInput} 
-                type={password ? "password" : "text"}
+                type={hidden ? "password" : "text"}
                 autoComplete="off"
                 spellCheck={false}
                 autoCapitalize="off"
+                value={value ?? ""}
+                onChange={(e) => onChange?.(e.target.value)}
             />
             <button
-            onClick={()=> setPas(!password)}
+                type="button"
+                onClick={()=> setHidden(!hidden)}
             >
-                { password ? (
+                { hidden ? (
                     <Eye />
                     ) : (
                     <EyeOff />
