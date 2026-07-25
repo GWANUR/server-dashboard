@@ -65,6 +65,7 @@ export default function Dashboard() {
                 const userData = await thisUser();
                 setStats(data);
                 setUser(userData);
+                console.log("dataUser", user);
 
                 setCpuHistory(prev => {
                     const point = {
@@ -85,10 +86,10 @@ export default function Dashboard() {
             } catch (e) {
                 console.error(e);
             } finally {
-        if (loading) {
-            setLoading(false);
-        }
-    }
+                if (loading) {
+                    setLoading(false);
+                }
+            }
         };
         load();
         const interval = window.setInterval(load, 5000);
@@ -106,7 +107,6 @@ export default function Dashboard() {
         { name: "Used", value: stats.ram?.percent ?? 0 },
         { name: "Free", value: Math.max(100 - (stats.ram?.percent ?? 0), 0) },
     ], [stats.ram?.percent]);
-
     return (
         <section id="dashboard" className="page">
             {loading ? (
@@ -114,7 +114,7 @@ export default function Dashboard() {
             ):(
                 <>
             <header>
-                <h2>Welcome back, { user.name }!</h2>
+                <h2>Welcome back, { user[0].name }!</h2>
                 <div className="rightheader">
                     <div className="server_controll">
                         <div className="btn_icon"><Play size={18} color="#fff" /></div>

@@ -28,6 +28,7 @@ export default function AgentPage(){
                 console.error('Error loading data:', error);
             }
         }
+        loadData();
     })
         return (
             <section id="agents" className="page">
