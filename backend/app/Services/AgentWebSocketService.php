@@ -68,9 +68,17 @@ class AgentWebSocketService
     {
         Log::info('AUTH MESSAGE', $message);
 
-        $headers = $connection->httpRequest->headers;
-        $token = $headers->get('X-Agent-Token');
+        
         $payload = $message['payload'];
+
+        $token = $message['payload']['token'] ?? null;
+
+        if (is_null($token)) {
+            $connection->send([
+                'type' => 'auth_no',
+                'message' => 'Token is null',
+            ]);
+        }
 
         $agent = ServerAgent::where('token', $token)->first();
 
