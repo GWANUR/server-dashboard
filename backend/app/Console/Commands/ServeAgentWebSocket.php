@@ -65,7 +65,9 @@ class ServeAgentWebSocket extends Command
 
                 if (!is_resource($socket) || feof($socket)) {
                     $service->disconnect($client['connection']);
-                    fclose($socket);
+                    if (is_resource($socket)) {
+                        @fclose($socket);
+                    }
                     unset($connections[$id]);
                     continue;
                 }

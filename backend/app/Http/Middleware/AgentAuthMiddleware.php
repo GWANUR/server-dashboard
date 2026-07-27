@@ -16,10 +16,12 @@ class AgentAuthMiddleware
      */
     public function handle(Request $request, Closure $next): mixed
     {
-        $token = $request->header('X-Agent-Token');
+        $payload = $message['payload'];
+
+        $token = $message['payload']['token'] ?? null;
 
         if (!$token) {
-            return response()->json(['error' => 'Missing X-Agent-Token header'], 403);
+            return response()->json(['error' => 'Missing Agent-Token'], 403);
         }
 
         $agent = ServerAgent::where('token', $token)->first();
