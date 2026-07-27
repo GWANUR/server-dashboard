@@ -19,7 +19,10 @@ Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logo
 
 Route::middleware('auth:sanctum')->post('/terminal', [TerminalController::class, 'execute']);
 
-Route::get('/agents', [AgentController::class, 'index'])->middleware('auth:sanctum');
+Route::middleware(['agent.auth'])->group(function () {
+    Route::post('/agent/heartbeat', [AgentController::class, 'heartbeat']);
+    Route::post('/agent/logs', [AgentController::class, 'storeLogs']);
+});
 
 Route::get('/allAgents', [AgentController::class, 'getAll'])->middleware('auth:sanctum');
 

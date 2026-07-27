@@ -53,13 +53,35 @@ class AgentController extends Controller
         ]);
     }
 
-    public function heartbeat(Request $request)
+    public function handle(Request $request, Closure $next)
     {
-        $payload = $request->all();
-        Cache::put('agent:'.($payload['agent_id'] ?? 'unknown'), $payload, now()->addMinutes(5));
+        $token = $request->header('X-Agent-Token')
+            ?? $request->query('token')
+            ?? $request->input('panel.token');
 
-        return response()->json(['ok' => true]);
+        $uuid = $request->header('X-Agent-UUID')
+            ?? $request->query('uuid')
+            ?? $request->input('agent.uuid');
+
+        if (!$token || !$uuid) {
+            return response()->json(['error' => 'Missing token or UUID'], 401);
+        }
+
+        $agent = \App\Models\ServerAgent::where('uuid', $uuid)
+            ->where('token', $token)
+            ->first();
+
+        if (!$agent || !$agent->is_active) {
+            // Не раскрывай причину ошибки
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        $agent->update(['last_seen_at' => now()]);
+        $request->merge(['agent' => $agent]);
+
+        return $next($request);
     }
+
 
     public function dispatchCommand(Request $request, AgentWebSocketService $service)
     {

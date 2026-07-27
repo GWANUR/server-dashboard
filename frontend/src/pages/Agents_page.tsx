@@ -113,12 +113,12 @@ export default function AgentPage(){
                             </button>
                         ) : (
                             <>
+                                <button className="btn_icon">
+                                    <Trash size={18}/>
+                                </button>
                                 <button className="btn_icon"
                                     onClick={()=>handleEdit(edit)}>
                                     <PencilOff size={18}/>
-                                </button>
-                                <button className="btn_icon">
-                                    <Trash size={18}/>
                                 </button>
                             </>
                         )}
