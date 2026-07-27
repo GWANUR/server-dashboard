@@ -135,7 +135,8 @@ export default function AgentPage(){
                             </button>
                         ) : (
                             <>
-                                <button className="btn_icon">
+                                <button className="btn_icon"
+                                    onClick={()=>{getDeletAgents();}}>
                                     <Trash size={18}/>
                                 </button>
                                 <button className="btn_icon"
