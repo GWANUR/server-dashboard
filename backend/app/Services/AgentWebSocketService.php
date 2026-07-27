@@ -2,8 +2,11 @@
 
 namespace App\Services;
 
+use BeyondCode\LaravelWebSockets\WebSockets\Channels\Channel;
+use BeyondCode\LaravelWebSockets\WebSockets\Server;
 use Illuminate\Support\Facades\Log;
 use App\Models\Agent;
+use App\Models\ServerAgent;
 
 class AgentWebSocketService
 {
@@ -65,21 +68,29 @@ class AgentWebSocketService
     {
         Log::info('AUTH MESSAGE', $message);
 
+        $headers = $connection->httpRequest->headers;
+        $token = $headers->get('X-Agent-Token');
         $payload = $message['payload'];
 
-        Agent::updateOrCreate(
-            ['agent_id' => $payload['agent_id']],
-            [
-                'hostname'  => $payload['hostname'],
-                'os'        => $payload['os'],
-                'arch'      => $payload['arch'],
-                'status'    => 'online',
-                'last_seen' => now(),
-            ]
-        );
+        $agent = ServerAgent::where('token', $token)->first();
+
+        if (!$agent) {
+            Log::warning('Auth rejected: agent not found');
+            $connection->close();
+            return;
+        }
+            
+        $payload = $message['payload'] ?? [];
+
+        $data = [
+            'agent_id'   => $payload['agent_id'],
+        ];
+
+        $agent->update($data);
 
         $connection->send([
             'type' => 'auth_ok',
+            'agent_id' => $agent->agent_id,
         ]);
     }
 
