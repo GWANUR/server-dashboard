@@ -17,17 +17,24 @@ class AgentAuthMiddleware
     public function handle(Request $request, Closure $next): mixed
     {
         $payload = $message['payload'];
-
-        $token = $message['payload']['token'] ?? null;
+        $name = $payload["agent_name"];
+        $token = $payload["token"] ?? null;
 
         if (!$token) {
             return response()->json(['error' => 'Missing Agent-Token'], 403);
+            Log::info('Error', 'Missing Agent-Token');
+        }
+        if (!$name) {
+            return response()->json(['error' => 'Missing Agent-Name'], 403);
+            Log::info('Error', 'Missing Agent-Name');
         }
 
-        $agent = ServerAgent::where('token', $token)->first();
+        $agent = ServerAgent::where('name', $name)->first();
 
-        if (!$agent) {
-            return response()->json(['error' => 'Not found agent'], 403);
+        if (!Hash::check($payload['token'], $agent->token)) {
+            Log::info('Error', 'No valide token');
+            $connection->close();
+            return null;
         }
 
         $request->attributes->add(['agent' => $agent]);

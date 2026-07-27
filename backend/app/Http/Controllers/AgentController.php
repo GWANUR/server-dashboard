@@ -10,6 +10,7 @@ use App\Models\ServerAgent;
 use App\Http\Resources\AgentResource;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class AgentController extends Controller
 {
@@ -88,7 +89,6 @@ class AgentController extends Controller
             ->first();
 
         if (!$agent || !$agent->is_active) {
-            // Не раскрывай причину ошибки
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
