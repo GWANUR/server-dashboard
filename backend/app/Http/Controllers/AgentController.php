@@ -59,6 +59,19 @@ class AgentController extends Controller
         ]);
     }
 
+    public function deleteAgent(Request $request){
+        $request->validate([
+            'ids' => ['required', 'array'],
+            'ids.*' => ['integer'],
+        ]);
+
+        ServerAgent::whereIn('id', $request->ids)->delete();
+
+        return response()->json([
+            'message' => 'Deleted'
+        ]);
+    }
+
     public function handle(Request $request, Closure $next)
     {
         // Приоритет: заголовок, потом query, потом тело

@@ -27,3 +27,5 @@ Route::middleware(['agent.auth'])->group(function () {
 Route::get('/allAgents', [AgentController::class, 'getAll'])->middleware('auth:sanctum');
 
 Route::post('/saveAgent', [AgentController::class, 'saveAgent'])->middleware('auth:sanctum'); 
+
+Route::post('/deleteAgent', [AgentController::class, 'deleteAgent'])->middleware('auth:sanctum'); 

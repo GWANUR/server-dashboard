@@ -11,7 +11,7 @@ import {
 import { useState, useEffect } from "react";
 import { LoadPage } from "./LoadPage";
 import { thisUser } from "../api/user"
-import { allAgent, saveAgent } from "../api/agent"
+import { allAgent, saveAgent, deleteAgents } from "../api/agent"
 import { SecretInput } from "../components/ui/SecretInput_By_StackAlex/SecretInput"
 import type { Agent } from "../api/agent"
 import { useQuery } from "@tanstack/react-query";
@@ -69,6 +69,26 @@ export default function AgentPage(){
             console.error(error);
         }
     }
+
+    const [selectedAgents, setSelectedAgents] = useState<number[]>([]);
+    function toggleAgent(id: number, checked: boolean) {
+        if (checked) {
+            setSelectedAgents(prev => [...prev, id]);
+        } else {
+            setSelectedAgents(prev => prev.filter(agentId => agentId !== id));
+        }
+    }
+    async function getDeletAgents() {
+        try {
+            console.log(selectedAgents);
+
+            await deleteAgents(selectedAgents);
+
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
     return (
         <section id="agents" className="page">
             {popup && (
@@ -147,7 +167,11 @@ export default function AgentPage(){
                                 <tr key={el.id}>
                                     {edit && (
                                         <td>
-                                            <input type="checkbox" id={`agent-${el.agent_id}`}/>
+                                            <input
+                                                type="checkbox"
+                                                checked={selectedAgents.includes(el.id)}
+                                                onChange={(e) => toggleAgent(el.id, e.target.checked)}
+                                            />
                                         </td>
                                     )}
                                     <td>{el.agent_id}</td>
