@@ -4,7 +4,9 @@ import {
   PencilOff,
   Trash,
   Search,
-  Save
+  Save,
+  CircleCheck,
+  CircleX
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { LoadPage } from "./LoadPage";
@@ -152,7 +154,7 @@ export default function AgentPage(){
                                     <td>{el.name}</td>
                                     <td>{el.user_id}</td>
                                     <td>{el.created_at}</td>
-                                    <td>{el.enabled}</td>
+                                    <td>{(el.enabled) ? <CircleCheck size={15} color="green" /> : <CircleX size={15} color="red" /> }</td>
                                 </tr>
                             ))}
                         </tbody>

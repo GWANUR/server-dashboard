@@ -79,42 +79,32 @@ class ServeAgentWebSocket extends Command
                 }
 
                 // ---------- Handshake ----------
-                // Внутри цикла foreach ($connections as $id => &$client)
-                if ($client['ready']) {
-                    $payload = $client['connection']->receive($chunk);
-                    if ($payload === '' || $payload === null) {
+                if (!$client['ready']) {
+
+                    $client['handshake'] .= $chunk;
+
+                    if (!str_contains($client['handshake'], "\r\n\r\n")) {
                         continue;
                     }
 
-                    $this->line("Payload: {$payload}");
+                    if (
+                        preg_match(
+                            '/GET \/ws\/agent HTTP\//',
+                            $client['handshake']
+                        ) === 1
+                    ) {
+                        $this->performHandshake(
+                            $socket,
+                            $client['handshake']
+                        );
 
-                    try {
-                        // Парсим, если это строка
-                        $data = is_string($payload) ? json_decode($payload, true) : $payload;
-                        if (!is_array($data)) {
-                            throw new \Exception('Invalid JSON payload');
-                        }
+                        $client['ready'] = true;
 
-                        $service->handleMessage($client['connection'], $data);
-                    } catch (\Throwable $e) {
-                        // ВАЖНО: логируем реальную ошибку, из‑за которой всё падает
-                        Log::critical('WebSocket handleMessage failed', [
-                            'client_id' => $id,
-                            'payload'   => $payload,
-                            'error'     => $e->getMessage(),
-                            'trace'     => $e->getTraceAsString(),
-                        ]);
-
-                        // Закрываем клиента аккуратно
-                        $socket = $client['socket'];
-                        if (is_resource($socket)) {
-                            @fclose($socket);
-                        }
-                        unset($connections[$id]);
-                        continue;
+                        $this->info("Handshake completed: {$id}");
                     }
+
+                    continue;
                 }
-
 
                 // ---------- WebSocket ----------
                 $payload = $client['connection']->receive($chunk);

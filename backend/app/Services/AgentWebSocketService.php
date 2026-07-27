@@ -78,6 +78,7 @@ class AgentWebSocketService
                 'type' => 'auth_no',
                 'message' => 'Token is null',
             ]);
+            return;
         }
 
         $agent = ServerAgent::where('token', $token)->first();
