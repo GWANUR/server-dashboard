@@ -25,7 +25,7 @@ class AgentAuthMiddleware
         $agent = ServerAgent::where('token', $token)->first();
 
         if (!$agent) {
-            return response()->json(['error' => 'Invalid token'], 403);
+            return response()->json(['error' => 'Not found agent'], 403);
         }
 
         $request->attributes->add(['agent' => $agent]);
