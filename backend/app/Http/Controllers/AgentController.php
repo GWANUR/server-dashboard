@@ -25,6 +25,12 @@ class AgentController extends Controller
 
         return new AgentResource($agent);
     }
+    
+    public function heartbeat(Request $request) 
+    {
+        
+    }
+    
 
     public function getAll(Request $request)
     {
@@ -55,6 +61,7 @@ class AgentController extends Controller
 
     public function handle(Request $request, Closure $next)
     {
+        // Приоритет: заголовок, потом query, потом тело
         $token = $request->header('X-Agent-Token')
             ?? $request->query('token')
             ?? $request->input('panel.token');
