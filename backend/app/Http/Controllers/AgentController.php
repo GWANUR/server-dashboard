@@ -62,13 +62,9 @@ class AgentController extends Controller
     public function handle(Request $request, Closure $next)
     {
         // Приоритет: заголовок, потом query, потом тело
-        $token = $request->header('X-Agent-Token')
-            ?? $request->query('token')
-            ?? $request->input('panel.token');
+        $token = $request->input('panel.token');
 
-        $uuid = $request->header('X-Agent-UUID')
-            ?? $request->query('uuid')
-            ?? $request->input('agent.uuid');
+        $uuid = $request->input('agent.uuid');
 
         if (!$token || !$uuid) {
             return response()->json(['error' => 'Missing token or UUID'], 401);
